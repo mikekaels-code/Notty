@@ -1,0 +1,94 @@
+@use "../styles/theme";
+
+.editor {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 40px 60px;
+}
+
+.empty {
+  display: grid;
+  place-items: center;
+  height: 100%;
+  color: var(--text-tertiary);
+  font-size: 15px;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.titleInput {
+  font-size: 38px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  line-height: 1.2;
+  outline: none;
+
+  &::placeholder {
+    color: var(--border); /* Much lighter for title placeholder */
+  }
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  color: var(--text-tertiary);
+  font-size: 13px;
+}
+
+.saved {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: #28a745;
+  font-size: 12px;
+
+  &::before {
+    content: "";
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+}
+
+.deleteBtn {
+  display: grid;
+  place-items: center;
+  padding: 4px;
+  border-radius: 4px;
+  color: inherit;
+  opacity: 0;
+
+  @include theme.subtle-transition;
+
+  &:hover {
+    background: var(--hover);
+    color: var(--danger);
+  }
+
+  .header:hover &,
+  &:focus-visible {
+    opacity: 1;
+  }
+}
+
+.content {
+  flex: 1;
+  resize: none;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--text);
+  outline: none;
+
+  @include theme.hide-scrollbar;
+}

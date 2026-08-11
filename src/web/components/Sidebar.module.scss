@@ -1,0 +1,98 @@
+@use "../styles/theme";
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  width: var(--sidebar-w);
+  min-width: var(--sidebar-w);
+  height: 100%;
+  padding: 10px 8px;
+  border-right: 1px solid var(--border);
+  background: var(--bg);
+  gap: 4px;
+
+  @include theme.subtle-transition;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 8px 10px;
+  margin-bottom: 6px;
+  user-select: none;
+}
+
+.logo {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 7px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.brandName {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 10px;
+  border-radius: var(--radius);
+  color: var(--text-secondary);
+  font-size: 14px;
+  text-align: left;
+  user-select: none;
+
+  @include theme.subtle-transition;
+  @include theme.focus-ring;
+
+  svg {
+    flex-shrink: 0;
+  }
+
+  &:hover {
+    background: var(--hover);
+    color: var(--text);
+  }
+
+  &.active {
+    background: var(--hover-light);
+    color: var(--text);
+    font-weight: 500;
+  }
+}
+
+.settings {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 10px;
+  border-radius: var(--radius);
+  color: var(--text-secondary);
+  font-size: 14px;
+  text-align: left;
+
+  @include theme.subtle-transition;
+  @include theme.focus-ring;
+
+  &:hover {
+    background: var(--hover);
+    color: var(--text);
+  }
+}

@@ -1,0 +1,22 @@
+@use "../styles/theme";
+
+.toggle {
+  position: fixed;
+  top: 12px;
+  right: 14px;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  color: var(--text-secondary);
+
+  @include theme.subtle-transition;
+  @include theme.focus-ring;
+
+  &:hover {
+    background: var(--hover);
+    color: var(--text);
+  }
+}
