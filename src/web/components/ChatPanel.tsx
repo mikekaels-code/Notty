@@ -39,10 +39,12 @@ function relTime(ts: string | number): string {
 export default function ChatPanel({
   width,
   onWidthChange,
+  onClose,
   onOpenSettings,
 }: {
   width: number;
   onWidthChange: (w: number) => void;
+  onClose: () => void;
   onOpenSettings: () => void;
 }) {
   const dispatch = useAppDispatch();
@@ -149,6 +151,15 @@ export default function ChatPanel({
             aria-label="New chat"
           >
             <PlusIcon size={15} />
+          </button>
+          <button
+            type="button"
+            className={styles.closeBtn}
+            onClick={onClose}
+            title="Close assistant"
+            aria-label="Close assistant"
+          >
+            <XIcon size={15} />
           </button>
         </div>
       </header>

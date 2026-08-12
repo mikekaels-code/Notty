@@ -6,7 +6,7 @@ import { getRootDirHandle, setRootDirHandle, clearRootDirHandle } from "./idbHan
 import { createFsAdapter } from "./fsAdapter";
 import { createFallbackAdapter } from "./fallbackAdapter";
 
-function isFsaSupported(): boolean {
+export function isFsaSupported(): boolean {
   return typeof window !== "undefined" && "showDirectoryPicker" in window && "showSaveFilePicker" in window;
 }
 

@@ -225,7 +225,7 @@ export default function NotesList({ needsFolderPick, onChooseFolder, onOpenSetti
     const showKids = q.length > 0 ? kidMatch : expanded.has(note.id);
     return (
       <Fragment key={note.id}>
-        {renderItem(note, { hasChildren: kids.length > 0, match: matchSet.has(note.id) })}
+        {renderItem(note, { hasChildren: kids.length > 0 })}
         {kids.length > 0 && showKids && (
           <ul className={styles.treeChildren}>
             {kids.map(renderTree)}
@@ -236,7 +236,21 @@ export default function NotesList({ needsFolderPick, onChooseFolder, onOpenSetti
   }
 
 
-  function renderItem(note: Note, opts?: { hasChildren: boolean; match?: boolean }) {
+  function highlight(text: string) {
+    if (!q) return text;
+    const idx = text.toLowerCase().indexOf(q);
+    if (idx === -1) return text;
+    const end = idx + q.length;
+    return (
+      <>
+        {text.slice(0, idx)}
+        <span className={styles.highlight}>{text.slice(idx, end)}</span>
+        {text.slice(end)}
+      </>
+    );
+  }
+
+  function renderItem(note: Note, opts?: { hasChildren: boolean }) {
     const edge = dragOver?.id === note.id ? dragOver.edge : null;
     const dropClass = edge === "before" ? styles.dropBefore : edge === "after" ? styles.dropAfter : edge === "inside" ? styles.dropInside : "";
     return (
@@ -307,11 +321,11 @@ export default function NotesList({ needsFolderPick, onChooseFolder, onOpenSetti
         <button
           type="button"
           draggable
-          className={`${styles.item} ${activeId === note.id ? styles.active : ""} ${opts?.match ? styles.itemMatch : ""}`}
+          className={`${styles.item} ${activeId === note.id ? styles.active : ""}`}
           onClick={() => dispatch(setActiveId(note.id))}
         >
           <span className={styles.itemBody}>
-            <span className={styles.itemTitle}>{note.title || "Untitled"}</span>
+            <span className={styles.itemTitle}>{highlight(note.title || "Untitled")}</span>
             <span className={styles.itemDate}>{formatDate(note.updatedAt)}</span>
           </span>
         </button>
@@ -345,7 +359,7 @@ export default function NotesList({ needsFolderPick, onChooseFolder, onOpenSetti
       right: "auto",
       top: Math.min(menuAnchor.y + 4, Math.max(8, window.innerHeight - menuHeight)),
       left: Math.max(menuAnchor.x - 210, 8),
-      zIndex: 50,
+      zIndex: 800,
     };
     const menu = (
       <div className={styles.menu} role="menu" style={style}>

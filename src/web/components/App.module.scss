@@ -169,28 +169,122 @@
   }
 }
 
-@media (max-width: 640px) {
-  .main {
-    flex-direction: column;
-  }
-  
-  .notesView {
-    flex: 1;
-    border-right: none;
-    border-bottom: 1px solid var(--border);
+.mobileBar {
+  display: none;
+}
+
+.menuBtn {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+
+  @include theme.subtle-transition;
+
+  &:hover {
+    color: var(--text);
   }
 }
 
-@media (max-width: 480px) {
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 190;
+  background: var(--overlay);
+  animation: backdropFade 150ms ease;
+}
+
+@keyframes backdropFade {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .mobileBar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 56px;
+    z-index: 60;
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .main {
+    padding-top: 56px;
+  }
+
   .notesView {
-    flex-direction: column;
+    position: relative;
 
     > :first-child {
-      width: 100%;
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: min(300px, 85vw);
       min-width: 0;
-      flex: none;
-      border-right: none;
-      border-bottom: 1px solid var(--border);
+      z-index: 200;
+      background: var(--bg);
+      border-right: 1px solid var(--border);
+      box-shadow: 0 0 40px rgba(0, 0, 0, 0.18);
+      transform: translateX(0);
+      transition: transform 240ms cubic-bezier(0.32, 0.72, 0, 1);
     }
+
+    > :last-child {
+      flex: 1;
+      min-width: 0;
+    }
+  }
+
+  .notesViewCollapsed {
+    > :first-child {
+      width: min(300px, 85vw);
+      min-width: 0;
+      transform: translateX(-105%);
+      box-shadow: none;
+    }
+  }
+
+  .chatWrap {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: auto;
+    z-index: 150;
+  }
+
+  .chatTray {
+    position: fixed;
+    top: auto;
+    left: auto;
+    right: 16px;
+    bottom: 24px;
+    transform: none;
+    min-width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    font-size: 13px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.18), 0 0 0 1px rgba(0, 0, 0, 0.04);
+  }
+
+  .chatTray:active {
+    transform: scale(0.94);
+  }
+
+  .trayActive {
+    display: none;
   }
 }

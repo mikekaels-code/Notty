@@ -100,6 +100,25 @@
   color: var(--accent);
 }
 
+.closeBtn {
+  display: none;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  color: var(--text-tertiary);
+  transition: background 150ms ease, color 150ms ease;
+
+  &:hover {
+    background: var(--hover);
+    color: var(--text);
+  }
+
+  &:active {
+    background: var(--accent-soft);
+  }
+}
+
 .form {
   padding: 0 20px 20px;
 }
@@ -591,5 +610,20 @@
   &:active {
     background: rgba(224, 62, 62, 0.1);
     color: var(--danger);
+  }
+}
+
+@media (max-width: 768px) {
+  .panel {
+    width: 100% !important;
+    border-left: none;
+  }
+
+  .resizeHandle {
+    display: none;
+  }
+
+  .closeBtn {
+    display: grid;
   }
 }

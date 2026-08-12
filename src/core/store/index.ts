@@ -67,6 +67,7 @@ export function rehydrateStore(store: ReturnType<typeof makeStore>): void {
         model?: string;
         storageMode?: "filesystem" | "fallback";
         categories?: string[];
+        connection?: "untested" | "ok" | "error";
       };
       const provider = parsed.provider ?? "deepseek";
       const apiKeys = parsed.apiKeys ?? {};
@@ -78,6 +79,7 @@ export function rehydrateStore(store: ReturnType<typeof makeStore>): void {
           model: parsed.model ?? "deepseek-chat",
           storageMode: parsed.storageMode ?? "filesystem",
           categories: parsed.categories ?? [],
+          connection: parsed.connection ?? "untested",
         }),
       );
     }

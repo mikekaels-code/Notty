@@ -63,6 +63,10 @@ export function FolderIcon({ size = 16, className }: IconProps) {
   return icon("folder", size, className);
 }
 
+export function BrowserIcon({ size = 16, className }: IconProps) {
+  return icon("browser", size, className);
+}
+
 export function SparkleIcon({ size = 16, className }: IconProps) {
   return icon("sparkles", size, className);
 }
@@ -77,6 +81,10 @@ export function SearchIcon({ size = 16, className }: IconProps) {
 
 export function EllipsisIcon({ size = 16, className }: IconProps) {
   return icon("menu-dots", size, className);
+}
+
+export function MenuIcon({ size = 16, className }: IconProps) {
+  return icon("menu-burger", size, className);
 }
 
 export function CaretIcon({ size = 10, className }: IconProps) {

@@ -382,4 +382,30 @@
   }
 }
 
+@media (max-width: 768px) {
+  .editor {
+    padding: 16px 20px 12px;
+  }
+
+  .header {
+    margin-bottom: 16px;
+  }
+
+  .titleInput {
+    font-size: 26px;
+  }
+
+  .deleteBtn {
+    opacity: 1;
+  }
+
+  .wrap.withBack {
+    padding-top: 44px;
+  }
+
+  .slashMenu {
+    max-width: calc(100vw - 40px);
+  }
+}
+
 

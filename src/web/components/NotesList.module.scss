@@ -307,14 +307,6 @@
       font-weight: 600;
     }
   }
-
-  &.itemMatch {
-    background: var(--accent-soft);
-
-    .itemTitle {
-      font-weight: 600;
-    }
-  }
 }
 
 .itemBody {
@@ -331,6 +323,10 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.highlight {
+  font-weight: 600;
 }
 
 .itemDate {
@@ -633,5 +629,20 @@
 
 .trashConfirm {
   background: var(--danger);
+}
+
+@media (max-width: 768px) {
+  .header {
+    padding: 20px 20px 14px;
+  }
+
+  .menu {
+    max-width: calc(100vw - 16px);
+  }
+
+  .modal {
+    width: calc(100vw - 32px);
+    max-width: 280px;
+  }
 }
 

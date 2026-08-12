@@ -9,7 +9,7 @@ import { useAppDispatch, useAppSelector, store } from "../../core/store";
 import { createNote, setError } from "../../core/store/notesSlice";
 import { chatError } from "../../core/store/chatSlice";
 import { pickNotesFolder } from "../storage/storageFactory";
-import { WarningIcon, XIcon, SparkleIcon, CaretIcon } from "./icons";
+import { WarningIcon, XIcon, SparkleIcon, CaretIcon, MenuIcon } from "./icons";
 
 export default function App() {
   const dispatch = useAppDispatch();
@@ -18,10 +18,13 @@ export default function App() {
   const chatErrorMsg = useAppSelector((s) => s.chat.error);
   const needsFolderPick = useAppSelector((s) => s.settings.needsFolderPick);
   const storageMode = useAppSelector((s) => s.settings.storageMode);
+  const activeId = useAppSelector((s) => s.notes.activeId);
 
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [onboardingOpen, setOnboardingOpen] = useState(() => localStorage.getItem("notty_onboarded") !== "1");
   const [sidebarCollapsed, setSidebarCollapsed] = useState(() => localStorage.getItem("notty_sidebar_collapsed") === "1");
+  const [isMobile, setIsMobile] = useState(() => window.matchMedia("(max-width: 768px)").matches);
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [chatOpen, setChatOpen] = useState(() => localStorage.getItem("notty_chat_open") !== "0");
   const [chatMounted, setChatMounted] = useState(() => localStorage.getItem("notty_chat_open") !== "0");
   const [chatClosing, setChatClosing] = useState(false);
@@ -42,6 +45,22 @@ export default function App() {
   useEffect(() => {
     localStorage.setItem("notty_sidebar_collapsed", sidebarCollapsed ? "1" : "0");
   }, [sidebarCollapsed]);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 768px)");
+    const onChange = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
+
+  useEffect(() => {
+    if (isMobile) setMobileNavOpen(false);
+  }, [activeId, isMobile]);
+
+  function toggleSidebar() {
+    if (isMobile) setMobileNavOpen((v) => !v);
+    else setSidebarCollapsed((v) => !v);
+  }
 
   function openChat() {
     setChatOpen(true);
@@ -87,14 +106,28 @@ export default function App() {
   }
 
   const toastMessage = notesError ?? chatErrorMsg;
+  const sidebarHidden = isMobile ? !mobileNavOpen : sidebarCollapsed;
 
   return (
     <div className={styles.app}>
+      {isMobile && (
+        <header className={styles.mobileBar}>
+          <button
+            type="button"
+            className={styles.menuBtn}
+            onClick={() => setMobileNavOpen((v) => !v)}
+            aria-label="Toggle menu"
+          >
+            <MenuIcon size={18} />
+          </button>
+        </header>
+      )}
+      {isMobile && mobileNavOpen && <div className={styles.backdrop} onClick={() => setMobileNavOpen(false)} />}
       <main className={styles.main}>
-        <div className={`${styles.notesView} ${sidebarCollapsed ? styles.notesViewCollapsed : ""}`}>
+        <div className={`${styles.notesView} ${sidebarHidden ? styles.notesViewCollapsed : ""}`}>
           <NotesList
-            collapsed={sidebarCollapsed}
-            onToggleCollapse={() => setSidebarCollapsed((v) => !v)}
+            collapsed={isMobile ? false : sidebarCollapsed}
+            onToggleCollapse={toggleSidebar}
             needsFolderPick={needsFolderPick && storageMode === "filesystem"}
             onChooseFolder={onChooseFolder}
             onOpenSettings={() => setSettingsOpen(true)}
@@ -103,7 +136,7 @@ export default function App() {
         </div>
         {chatMounted ? (
           <div className={`${styles.chatWrap}${chatClosing ? ` ${styles.chatWrapClosing}` : ""}`}>
-            <ChatPanel width={chatWidth} onWidthChange={setChatWidth} onOpenSettings={() => setSettingsOpen(true)} />
+            <ChatPanel width={chatWidth} onWidthChange={setChatWidth} onClose={closeChat} onOpenSettings={() => setSettingsOpen(true)} />
           </div>
         ) : null}
         <button
@@ -136,7 +169,7 @@ export default function App() {
         />
       )}
 
-      {settingsOpen && <SettingsModal onClose={() => setSettingsOpen(false)} />}
+      {settingsOpen && <SettingsModal onClose={() => setSettingsOpen(false)} isMobile={isMobile} />}
 
       {toastMessage && (
         <div className={styles.toast} role="alert">

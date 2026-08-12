@@ -3,11 +3,11 @@ import styles from "./SettingsModal.module.scss";
 import { useAppDispatch, useAppSelector, store } from "../../core/store";
 import { setApiKey, setModel, setProvider, setStorageMode, setConnection, refreshModels } from "../../core/store/settingsSlice";
 import { PROVIDERS, isProvider, testProviderConnection, type AiProvider } from "../../core/ai/deepseek";
-import { pickNotesFolder, resetNotesFolder } from "../storage/storageFactory";
-import { FolderIcon, XIcon, CheckIcon } from "./icons";
+import { pickNotesFolder, resetNotesFolder, switchToFallback, isFsaSupported } from "../storage/storageFactory";
+import { FolderIcon, BrowserIcon, XIcon, CheckIcon } from "./icons";
 import ThemeToggle from "./ThemeToggle";
 
-export default function SettingsModal({ onClose }: { onClose: () => void }) {
+export default function SettingsModal({ onClose, isMobile }: { onClose: () => void; isMobile: boolean }) {
   const dispatch = useAppDispatch();
   const settings = useAppSelector((s) => s.settings);
   const [showKey, setShowKey] = useState(false);
@@ -19,6 +19,10 @@ export default function SettingsModal({ onClose }: { onClose: () => void }) {
   const prov = PROVIDERS[providerId];
   const apiKey = settings.apiKeys[providerId] ?? "";
   const hasKey = apiKey.trim().length > 0;
+  const fsaSupported = isFsaSupported();
+
+  const prevApiKey = useRef(apiKey);
+  const prevProviderId = useRef(providerId);
 
   function onProviderChange(p: AiProvider) {
     dispatch(setProvider(p));
@@ -61,6 +65,10 @@ export default function SettingsModal({ onClose }: { onClose: () => void }) {
   }
 
   useEffect(() => {
+    const changed = prevApiKey.current !== apiKey || prevProviderId.current !== providerId;
+    prevApiKey.current = apiKey;
+    prevProviderId.current = providerId;
+    if (!changed) return;
     dispatch(setConnection("untested"));
     setTestError("");
   }, [apiKey, providerId, dispatch]);
@@ -156,39 +164,64 @@ export default function SettingsModal({ onClose }: { onClose: () => void }) {
           <h3 className={styles.sectionTitle}>Notes storage</h3>
 
           <div className={styles.storageCards}>
+            {fsaSupported && !isMobile && (
+              <div className={styles.storageRow}>
+                <button
+                  type="button"
+                  className={`${styles.storageCard} ${settings.storageMode === "filesystem" ? styles.storageCardActive : ""}`}
+                  onClick={() => {
+                    dispatch(setStorageMode("filesystem"));
+                    if (settings.folderChosen) onResetFolder();
+                  }}
+                >
+                  <div className={styles.storageCardIcon}>
+                    <FolderIcon size={18} />
+                  </div>
+                  <div className={styles.storageCardBody}>
+                    <span className={styles.storageCardTitle}>Filesystem</span>
+                    <span className={styles.storageCardDesc}>
+                      {settings.folderChosen
+                        ? "Synced to your chosen folder"
+                        : "Pick a folder — each note becomes a Markdown file"}
+                    </span>
+                  </div>
+                  {settings.storageMode === "filesystem" && settings.folderChosen && (
+                    <span className={styles.storageBadge}>Active</span>
+                  )}
+                </button>
+                {settings.storageMode === "filesystem" && (
+                  <button type="button" className={styles.storageFolderBtn} onClick={onChooseFolder}>
+                    <FolderIcon size={14} />
+                    {settings.folderChosen ? "Change" : "Choose"}
+                  </button>
+                )}
+              </div>
+            )}
+
             <div className={styles.storageRow}>
               <button
                 type="button"
-                className={`${styles.storageCard} ${settings.storageMode === "filesystem" ? styles.storageCardActive : ""}`}
+                className={`${styles.storageCard} ${settings.storageMode === "fallback" || isMobile ? styles.storageCardActive : ""}`}
                 onClick={() => {
-                  dispatch(setStorageMode("filesystem"));
-                  if (settings.folderChosen) onResetFolder();
+                  if (settings.storageMode === "fallback") return;
+                  void switchToFallback(store);
                 }}
               >
                 <div className={styles.storageCardIcon}>
-                  <FolderIcon size={18} />
+                  <BrowserIcon size={18} />
                 </div>
                 <div className={styles.storageCardBody}>
-                  <span className={styles.storageCardTitle}>Filesystem</span>
-                  <span className={styles.storageCardDesc}>
-                    {settings.folderChosen
-                      ? "Synced to your chosen folder"
-                      : "Pick a folder — each note becomes a Markdown file"}
-                  </span>
+                  <span className={styles.storageCardTitle}>Browser</span>
+                  <span className={styles.storageCardDesc}>Stored locally in this browser</span>
                 </div>
-                {settings.storageMode === "filesystem" && settings.folderChosen && (
-                  <span className={styles.storageBadge}>Active</span>
-                )}
+                {(settings.storageMode === "fallback" || isMobile) && <span className={styles.storageBadge}>Active</span>}
               </button>
-              {settings.storageMode === "filesystem" && (
-                <button type="button" className={styles.storageFolderBtn} onClick={onChooseFolder}>
-                  <FolderIcon size={14} />
-                  {settings.folderChosen ? "Change" : "Choose"}
-                </button>
-              )}
             </div>
           </div>
 
+          {!fsaSupported && (
+            <p className={styles.note}>Folder storage isn't available on this device — notes are kept in your browser.</p>
+          )}
         </section>
       </div>
     </div>
