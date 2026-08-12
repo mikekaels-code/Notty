@@ -26,7 +26,7 @@ A minimalist, Notion-inspired note-taking app with a built-in AI assistant — l
 ### Notes & Organization
 
 - **Markdown editing** — a full WYSIWYG editor (TipTap) with rich formatting: headings, bold/italic, lists, links, blockquotes, and fenced code blocks.
-- **Nested notes** — any note can have a *parent*, creating a child/parent hierarchy shown as an indented tree in the sidebar.
+- **Nested notes** — any note can have a *parent*, creating a child/parent hierarchy shown as an indented tree in the sidebar. Child notes live under their parent, can nest arbitrarily deep, and are linked via the `/child` slash command. You can drag-and-drop a note onto another to re-parent it, or ask the AI to move notes around.
 - **Categories** — tag notes into categories, which render as grouped sections in the sidebar.
 - **Favorites** — pin notes to the top of the list for quick access.
 - **Instant search** — filter the sidebar by title as you type.
