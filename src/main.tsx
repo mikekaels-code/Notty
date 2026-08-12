@@ -11,6 +11,10 @@ import "./web/styles/global.scss";
 rehydrateStore(store);
 void initStorage(store);
 
+// Prevent pinch-zoom on iOS Safari (ignores `user-scalable=no`).
+document.addEventListener("gesturestart", (e) => e.preventDefault());
+document.addEventListener("gesturechange", (e) => e.preventDefault());
+
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <Provider store={store}>

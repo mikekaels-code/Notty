@@ -644,5 +644,10 @@
     width: calc(100vw - 32px);
     max-width: 280px;
   }
+
+  .searchInput,
+  .categoryInput {
+    font-size: 16px;
+  }
 }
 
