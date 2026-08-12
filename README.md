@@ -4,7 +4,7 @@ A minimalist, Notion-inspired note-taking app with a built-in AI assistant — l
 
 **Live demo:** [https://notty-gray.vercel.app/](https://notty-gray.vercel.app/)
 
-![Notty app screenshot]([https://placehold.co/1280x800?text=Notty+App+Screenshot](https://ibb.co.com/B5Rh2wCC))
+![Notty app screenshot](https://ibb.co.com/B5Rh2wCC)
 
 ---
 
