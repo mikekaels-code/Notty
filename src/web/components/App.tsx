@@ -4,6 +4,7 @@ import NotesList from "./NotesList";
 import NoteEditor from "./NoteEditor";
 import ChatPanel from "./ChatPanel";
 import SettingsModal from "./SettingsModal";
+import OnboardingModal from "./OnboardingModal";
 import { useAppDispatch, useAppSelector, store } from "../../core/store";
 import { createNote, setError } from "../../core/store/notesSlice";
 import { chatError } from "../../core/store/chatSlice";
@@ -19,6 +20,7 @@ export default function App() {
   const storageMode = useAppSelector((s) => s.settings.storageMode);
 
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [onboardingOpen, setOnboardingOpen] = useState(() => localStorage.getItem("notty_onboarded") !== "1");
   const [sidebarCollapsed, setSidebarCollapsed] = useState(() => localStorage.getItem("notty_sidebar_collapsed") === "1");
   const [chatOpen, setChatOpen] = useState(() => localStorage.getItem("notty_chat_open") !== "0");
   const [chatMounted, setChatMounted] = useState(() => localStorage.getItem("notty_chat_open") !== "0");
@@ -119,6 +121,15 @@ export default function App() {
           {chatOpen ? <CaretIcon size={14} /> : <><SparkleIcon size={14} /> AI</>}
         </button>
       </main>
+
+      {onboardingOpen && (
+        <OnboardingModal
+          onClose={() => {
+            localStorage.setItem("notty_onboarded", "1");
+            setOnboardingOpen(false);
+          }}
+        />
+      )}
 
       {settingsOpen && <SettingsModal onClose={() => setSettingsOpen(false)} />}
 
