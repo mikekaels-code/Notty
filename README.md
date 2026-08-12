@@ -6,6 +6,12 @@ A minimalist, Notion-inspired note-taking app with a built-in AI assistant — l
 
 ![Notty app screenshot](https://i.ibb.co.com/nNSXMRLL/image.png)
 
+Notty is fully responsive — on phones the sidebar becomes an off-canvas drawer and the assistant opens full-screen.
+
+| | |
+| --- | --- |
+| ![Notty mobile — notes list](https://i.ibb.co.com/7d8CTsLz/Simulator-Screenshot-i-Phone-17-Pro-2026-08-13-at-02-15-42.png) | ![Notty mobile — editor](https://i.ibb.co.com/sLTW0wF/Simulator-Screenshot-i-Phone-17-Pro-2026-08-13-at-02-15-47.png) |
+
 ---
 
 ## Table of Contents
@@ -34,6 +40,7 @@ A minimalist, Notion-inspired note-taking app with a built-in AI assistant — l
 - **Keyboard shortcut** — `Ctrl/Cmd + N` creates a new note.
 - **Autosave** — edits save automatically (debounced) with a visible "saved" indicator.
 - **Dark / light theme** — persisted preference, toggleable in the header.
+- **Mobile responsive** — the layout adapts to phones: off-canvas sidebar drawer, full-screen assistant, and zoom-safe form fields.
 
 ### Storage
 
