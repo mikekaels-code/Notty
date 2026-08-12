@@ -93,8 +93,8 @@ export function parseNoteFile(raw: string, fallbackId: string): ParsedNoteFile {
 
 /** Fallback title when a note has no explicit title. */
 export function deriveTitle(content: string, id: string): string {
-  const heading = content.match(/^#\s+(.+)$/m)?.[1]?.trim();
-  if (heading) return heading;
+  const heading = content.match(/^#{1,6}\s+(.+)$/m)?.[1]?.trim();
+  if (heading) return heading.replace(/\s+#+\s*$/, "").trim();
   const firstLine = content.split("\n").find((l) => l.trim());
   if (firstLine) return firstLine.trim().slice(0, 60);
   return `Untitled ${id.slice(0, 8)}`;

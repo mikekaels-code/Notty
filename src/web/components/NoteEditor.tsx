@@ -60,7 +60,7 @@ export default function NoteEditor() {
     }
     const query = before.slice(lastSlash + 1);
     const lower = query.toLocaleLowerCase();
-    if (query.includes("\n") || !(lower.startsWith("child") || lower.startsWith("code"))) {
+    if (query.includes("\n") || !("code".startsWith(lower) || "child".startsWith(lower))) {
       closeSlash();
       return;
     }
@@ -227,17 +227,20 @@ export default function NoteEditor() {
     .filter((n) => n.parentId === note?.id)
     .sort((a, b) => (a.updatedAt < b.updatedAt ? 1 : -1));
 
+  const slashQueryLower = slashQuery?.toLocaleLowerCase() ?? "";
+  const showCodeCmd = "code".startsWith(slashQueryLower);
+  const showChildNotes = "child".startsWith(slashQueryLower);
+
   const slashSuggestions: SlashSuggestion[] =
     slashQuery !== null && note
       ? [
-          ...(slashQuery.toLocaleLowerCase().startsWith("code")
-            ? ([{ kind: "code" as const }] satisfies SlashSuggestion[])
+          ...(showCodeCmd ? ([{ kind: "code" as const }] satisfies SlashSuggestion[]) : []),
+          ...(showChildNotes
+            ? notes
+                .filter((n) => n.parentId === note.id)
+                .slice(0, 7)
+                .map((n): SlashSuggestion => ({ kind: "note", note: n }))
             : []),
-          ...notes
-            .filter((n) => n.parentId === note.id)
-            .filter((n) => n.title.toLowerCase().includes(slashQuery.toLowerCase()))
-            .slice(0, 7)
-            .map((n): SlashSuggestion => ({ kind: "note", note: n })),
         ]
       : [];
 
