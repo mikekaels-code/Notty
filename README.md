@@ -68,6 +68,7 @@ Notty ships with a built-in chat assistant that can operate on your notes throug
 - **Agent Memory** — notes in the special *Agent Memory* category are injected into every conversation as persistent context, so the assistant remembers your preferences, style, and facts across sessions.
 - **Style guide** — a system prompt instructs the model to produce clean, well-structured Markdown (headings, lists, spacing) that matches Notty's editor.
 - **Multi-provider** — works with DeepSeek, OpenAI, Anthropic (Claude), and ZhipuAI (GLM). Models are selectable and auto-fetched where the provider exposes a models endpoint.
+- **Provider status** — DeepSeek is the only provider tested so far. OpenAI, Anthropic (Claude), and ZhipuAI (GLM) are wired up but **not yet tested**.
 - **Multi-round tool use** — the assistant loops through tool calls and model turns (up to 8 rounds) so complex requests like "create 10 notes" or "move everything into a category" work in a single message.
 
 ### Configuring the AI
