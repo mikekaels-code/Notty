@@ -1,5 +1,6 @@
 import type { Note, NotesStorageAdapter } from "../../core/types";
 import { noteFilename, parseNoteFile, serializeNote } from "../../core/utils";
+import { getRootDirHandle } from "./idbHandles";
 
 /**
  * File System Access API adapter. Each note is its own Markdown file with a
@@ -10,16 +11,20 @@ import { noteFilename, parseNoteFile, serializeNote } from "../../core/utils";
  */
 export function createFsAdapter(
   pickDirectory: () => Promise<FileSystemDirectoryHandle>,
+  initialRoot?: FileSystemDirectoryHandle | null,
 ): NotesStorageAdapter {
-  let root: FileSystemDirectoryHandle | null = null;
+  let root: FileSystemDirectoryHandle | null = initialRoot ?? null;
 
   async function ensureReady(): Promise<void> {
-    if (root) {
-      const perm = await root.requestPermission({ mode: "readwrite" });
-      if (perm === "granted") return;
+    if (root) return;
+    const handle = await getRootDirHandle();
+    if (handle) {
+      const perm = await handle.queryPermission({ mode: "readwrite" });
+      if (perm === "granted") {
+        root = handle;
+        return;
+      }
       if (perm === "denied") throw new Error("Access to your notes folder was denied.");
-      root = await pickDirectory();
-      return;
     }
     root = await pickDirectory();
   }
@@ -64,6 +69,8 @@ export function createFsAdapter(
             createdAt: parsed.createdAt,
             updatedAt: parsed.updatedAt,
             pinned: parsed.pinned,
+            ...(parsed.category ? { category: parsed.category } : {}),
+            ...(parsed.parentId ? { parentId: parsed.parentId } : {}),
           });
         } catch {
           /* skip unreadable/corrupt file */
@@ -84,6 +91,8 @@ export function createFsAdapter(
         createdAt: parsed.createdAt,
         updatedAt: parsed.updatedAt,
         pinned: parsed.pinned,
+        ...(parsed.category ? { category: parsed.category } : {}),
+        ...(parsed.parentId ? { parentId: parsed.parentId } : {}),
       };
     },
 

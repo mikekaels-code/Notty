@@ -5,6 +5,9 @@ export interface Note {
   createdAt: string;
   updatedAt: string;
   pinned: boolean;
+  category?: string;
+  parentId?: string;
+  position?: number;
 }
 
 export type StorageMode = "filesystem" | "fallback";
@@ -30,9 +33,7 @@ export interface NotesStorageAdapter {
   update(note: Note): Promise<void>;
   remove(id: string): Promise<void>;
 }
-
 export type ThemeMode = "light" | "dark";
-export type View = "notes" | "chat";
 
 export interface ChatToolCall {
   id: string;

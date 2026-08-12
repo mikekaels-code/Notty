@@ -1,4 +1,4 @@
-const DB_NAME = "smartnotes";
+const DB_NAME = "notty";
 const STORE = "handles";
 const ROOT_KEY = "rootDir";
 

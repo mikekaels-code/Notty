@@ -1,12 +1,312 @@
 @use "../styles/theme";
 
+.wrap {
+  position: relative;
+  flex: 1;
+  display: flex;
+  min-width: 0;
+  min-height: 0;
+
+  &.withBack {
+    padding-top: 48px;
+  }
+}
+
+.backBtn {
+  position: absolute;
+  top: 12px;
+  left: 16px;
+  z-index: 5;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
+  color: var(--text-secondary);
+
+  @include theme.subtle-transition;
+
+  &:hover {
+    background: var(--hover);
+    color: var(--text);
+  }
+}
+
 .editor {
   display: flex;
   flex-direction: column;
+  flex: 1;
   height: 100%;
   max-width: 800px;
   margin: 0 auto;
-  padding: 40px 60px;
+  padding: 20px 28px 16px;
+  overflow: hidden;
+}
+
+.editorBody {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+
+.editorContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+:global(.tiptap) {
+  flex: 1;
+  min-height: 0;
+}
+}
+
+.content {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 4px 2px 24px;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--text);
+  outline: none;
+
+  :global(p.is-editor-empty:first-child::before) {
+    color: var(--text-tertiary);
+    content: attr(data-placeholder);
+    float: left;
+    height: 0;
+    pointer-events: none;
+  }
+
+  :global(a) {
+    color: var(--accent);
+    background: var(--accent-soft);
+    border-radius: 4px;
+    padding: 1px 4px;
+    font-weight: 500;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  :global(pre) {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin: 8px 0;
+    min-height: 44px;
+    overflow-x: auto;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--text);
+
+    :global(code) {
+      font-family: inherit;
+      font-size: inherit;
+      color: inherit;
+    }
+  }
+
+  :global(code) {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.9em;
+    color: var(--accent);
+  }
+
+  :global(ul),
+  :global(ol) {
+    padding-left: 20px;
+    margin: 4px 0;
+  }
+
+  :global(ul) {
+    list-style-type: disc;
+    list-style-position: outside;
+  }
+
+  :global(ol) {
+    list-style-type: decimal;
+    list-style-position: outside;
+  }
+
+  :global(li) {
+    margin: 2px 0;
+  }
+
+  :global(h1) {
+    font-size: 20px;
+    font-weight: 700;
+    margin: 16px 0 6px;
+    line-height: 1.3;
+  }
+
+  :global(h2) {
+    font-size: 17px;
+    font-weight: 650;
+    margin: 12px 0 4px;
+    line-height: 1.3;
+  }
+
+  :global(h3) {
+    font-size: 15px;
+    font-weight: 600;
+    margin: 8px 0 3px;
+    line-height: 1.3;
+  }
+
+  :global(p) {
+    margin: 0 0 4px;
+  }
+
+  @include theme.hide-scrollbar;
+}
+
+.aiOverlay {
+  position: absolute;
+  z-index: 30;
+  top: 8px;
+  right: 8px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 600;
+  pointer-events: none;
+  animation: aiFade 2s ease forwards;
+}
+
+@keyframes aiFade {
+  0% { opacity: 0; transform: translateY(-4px); }
+  10% { opacity: 1; transform: translateY(0); }
+  80% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.slashMenu {
+  position: absolute;
+  z-index: 40;
+  min-width: 220px;
+  max-width: 320px;
+  max-height: 260px;
+  overflow-y: auto;
+  padding: 6px;
+  border-radius: 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.14);
+
+  @include theme.hide-scrollbar;
+}
+
+.slashItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 7px 10px;
+  border-radius: 5px;
+  color: var(--text);
+  font-size: 13px;
+  text-align: left;
+
+  @include theme.subtle-transition;
+
+  &:hover {
+    background: var(--hover);
+  }
+
+  &.slashActive {
+    background: var(--hover);
+  }
+}
+
+.slashIcon {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  border-radius: 4px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.slashTitle {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.childrenSection,
+.linksSection {
+  flex-shrink: 0;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+  margin-top: 16px;
+}
+
+.childrenLabel {
+  padding-bottom: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.childrenList,
+.linksList {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-height: 140px;
+  overflow-y: auto;
+
+  @include theme.hide-scrollbar;
+}
+
+.childLink {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 6px 8px;
+  border-radius: 6px;
+  color: var(--accent);
+  font-size: 14px;
+  text-align: left;
+
+  @include theme.subtle-transition;
+
+  &:hover {
+    background: var(--hover);
+  }
+}
+
+.childBullet {
+  flex-shrink: 0;
+  color: var(--text-tertiary);
+  font-size: 12px;
+}
+
+.childTitle {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.childDate {
+  flex-shrink: 0;
+  color: var(--text-tertiary);
+  font-size: 11px;
 }
 
 .empty {
@@ -82,13 +382,4 @@
   }
 }
 
-.content {
-  flex: 1;
-  resize: none;
-  font-size: 16px;
-  line-height: 1.6;
-  color: var(--text);
-  outline: none;
 
-  @include theme.hide-scrollbar;
-}

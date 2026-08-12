@@ -19,6 +19,7 @@ function needsPick(store: AppStore): void {
 export async function pickNotesFolder(store: AppStore): Promise<FileSystemDirectoryHandle> {
   const dir = await window.showDirectoryPicker({ mode: "readwrite" });
   await setRootDirHandle(dir);
+  setStorageAdapter(createFsAdapter(() => pickNotesFolder(store), dir));
   store.dispatch(setFolderChosen(true));
   store.dispatch(setNeedsFolderPick(false));
   await store.dispatch(loadNotes());
@@ -54,10 +55,9 @@ export async function initStorage(store: AppStore): Promise<void> {
   if (perm === "granted") {
     store.dispatch(setFolderChosen(true));
     await store.dispatch(loadNotes());
-  } else {
-    // Needs a user gesture to re-prompt; show the "choose folder" state instead.
-    needsPick(store);
+    return;
   }
+  needsPick(store);
 }
 
 /** Drop the persisted handle; next save / reload will ask for a folder again. */

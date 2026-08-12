@@ -1,6 +1,6 @@
-# SmartNotes
+# Notty
 
-A minimalist, Notion-inspired note-taking app with a built-in AI assistant. SmartNotes is a client-side React application that stores your notes directly on your local file system as plain Markdown files.
+A minimalist, Notion-inspired note-taking app with a built-in AI assistant. Notty is a client-side React application that stores your notes directly on your local file system as plain Markdown files.
 
 ## Features
 

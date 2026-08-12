@@ -20,6 +20,9 @@ export interface ParsedNoteFile {
   createdAt: string;
   updatedAt: string;
   pinned: boolean;
+  category?: string;
+  parentId?: string;
+  position?: number;
 }
 
 const FALLBACK_DATE = "1970-01-01T00:00:00.000Z";
@@ -51,8 +54,11 @@ export function serializeNote(note: Note): string {
     createdAt: note.createdAt,
     updatedAt: note.updatedAt,
     pinned: note.pinned,
+    ...(note.category ? { category: note.category } : {}),
+    ...(note.parentId ? { parentId: note.parentId } : {}),
+    ...(note.position !== undefined ? { position: note.position } : {}),
   };
-  const body = note.content.startsWith("#") ? note.content : `# ${note.title}\n\n${note.content}`;
+  const body = note.content;
   return `${FRONTMATTER_OPEN}\n${JSON.stringify(meta, null, 2)}\n${FRONTMATTER_CLOSE}${body}`;
 }
 
@@ -63,7 +69,26 @@ export function parseNoteFile(raw: string, fallbackId: string): ParsedNoteFile {
   const createdAt = typeof meta.createdAt === "string" ? meta.createdAt : FALLBACK_DATE;
   const updatedAt = typeof meta.updatedAt === "string" ? meta.updatedAt : FALLBACK_DATE;
   const pinned = meta.pinned === true;
-  return { title, content: body, createdAt, updatedAt, pinned };
+  const category = typeof meta.category === "string" && meta.category ? meta.category : undefined;
+  const parentId = typeof meta.parentId === "string" && meta.parentId ? meta.parentId : undefined;
+  const position = typeof meta.position === "number" ? meta.position : undefined;
+
+  let content = body;
+  const headingPrefix = `# ${title}\n\n`;
+  if (content.startsWith(headingPrefix)) {
+    content = content.slice(headingPrefix.length);
+  }
+
+  return {
+    title,
+    content,
+    createdAt,
+    updatedAt,
+    pinned,
+    ...(category ? { category } : {}),
+    ...(parentId ? { parentId } : {}),
+    ...(position !== undefined ? { position } : {}),
+  };
 }
 
 /** Fallback title when a note has no explicit title. */
@@ -83,9 +108,9 @@ export function slugify(s: string): string {
     .slice(0, 40) || "note";
 }
 
-/** Filename for a note on disk. Stable: derived from the id, never from the (mutable) title. */
-export function noteFilename(note: Pick<Note, "id" | "title">): string {
-  return `${slugify(note.title)}-${note.id.slice(0, 8)}.md`;
+/** Filename for a note on disk. Derived purely from the id so renames never create new files. */
+export function noteFilename(note: Pick<Note, "id">): string {
+  return `${note.id}.md`;
 }
 
 export function formatDate(iso: string): string {

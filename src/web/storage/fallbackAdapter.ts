@@ -1,6 +1,6 @@
 import type { Note, NotesStorageAdapter } from "../../core/types";
 
-const KEY = "smartnotes_fallback_notes";
+const KEY = "notty_fallback_notes";
 
 function readAll(): Note[] {
   try {

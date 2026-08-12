@@ -20,7 +20,6 @@
   max-width: calc(100vw - 40px);
   max-height: calc(100vh - 60px);
   overflow-y: auto;
-  padding: 28px 32px;
   border-radius: 12px;
   background: var(--bg);
   border: 1px solid var(--border);
@@ -37,7 +36,14 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 24px;
+  padding: 18px 24px;
+  border-bottom: 1px solid var(--border);
+}
+
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .title {
@@ -63,7 +69,13 @@
 }
 
 .section {
-  margin-bottom: 24px;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border);
+
+  &:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+  }
 }
 
 .sectionTitle {
@@ -188,8 +200,108 @@
   color: var(--text-secondary);
 }
 
-.btnRow {
+.storageCards {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 8px;
+  margin-bottom: 10px;
+}
+
+.storageRow {
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+}
+
+.storageCard {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg-secondary);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 150ms ease, background 150ms ease;
+
+  &:hover {
+    border-color: var(--text-tertiary);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+}
+
+.storageFolderBtn {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0 14px;
+  border-radius: 10px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 500;
+  transition: opacity 150ms ease;
+
+  &:hover {
+    opacity: 0.9;
+  }
+}
+
+.storageCardActive {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.storageCardIcon {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: var(--hover);
+  color: var(--text-secondary);
+}
+
+.storageCardActive .storageCardIcon {
+  background: var(--accent);
+  color: #fff;
+}
+
+.storageCardBody {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.storageCardTitle {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.storageCardDesc {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  line-height: 1.4;
+}
+
+.storageBadge {
+  flex-shrink: 0;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--accent);
+  background: var(--accent-soft);
+  border-radius: 4px;
+  padding: 2px 6px;
 }
