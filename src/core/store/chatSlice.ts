@@ -142,7 +142,6 @@ interface RoundCtx {
   provider: AiProvider;
   messages: DeepseekMessage[];
   dispatch: (action: UnknownAction) => void;
-  getState: () => RootState;
 }
 
 type ToolExecution = Awaited<ReturnType<typeof executeTool>>;
@@ -166,7 +165,7 @@ function syncExecution(dispatch: (action: UnknownAction) => void, execution: Too
 }
 
 async function runRounds(ctx: RoundCtx): Promise<void> {
-  const { apiKey, model, provider, messages, dispatch, getState } = ctx;
+  const { apiKey, model, provider, messages, dispatch } = ctx;
 
   for (let round = 0; round < MAX_TOOL_ROUNDS; round++) {
     const result = await streamChat({
@@ -195,11 +194,7 @@ async function runRounds(ctx: RoundCtx): Promise<void> {
       try {
         execution = await executeTool(getStorageAdapter(), call.name, call.arguments);
       } catch (e) {
-        execution = {
-          ok: false,
-          summary: `Tool failed: ${errMsg(e)}`,
-          label: `Tool failed: ${errMsg(e)}`,
-        };
+        execution = failedExecution(e);
       }
       toolResults.push({ callId: call.id, ok: execution.ok, summary: execution.label });
       messages.push({ role: "tool", tool_call_id: call.id, content: execution.summary });
@@ -258,7 +253,6 @@ export const sendMessage = createAsyncThunk("chat/send", async (text: string, { 
       provider: currentProvider(getState() as RootState),
       messages,
       dispatch,
-      getState: () => getState() as RootState,
     });
   } catch (e) {
     if (!(e instanceof DOMException && e.name === "AbortError")) {

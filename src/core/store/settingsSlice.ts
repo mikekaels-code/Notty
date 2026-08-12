@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type { StorageMode } from "../types";
-import { fetchProviderModels, isProvider, PROVIDERS } from "../ai/deepseek";
+import { fetchProviderModels, isProvider } from "../ai/deepseek";
 
 export interface SettingsState {
   apiKeys: Record<string, string>;
