@@ -43,16 +43,17 @@ const SLIDES: Slide[] = [
   },
 ];
 
-export default function OnboardingModal({ onClose }: { onClose: () => void }) {
+export default function OnboardingModal({ onClose, onSkip }: { onClose: () => void; onSkip?: () => void }) {
   const [index, setIndex] = useState(0);
   const last = index === SLIDES.length - 1;
 
   const next = () => (last ? onClose() : setIndex((i) => i + 1));
   const prev = () => setIndex((i) => Math.max(0, i - 1));
+  const skip = () => (onSkip ?? onClose)();
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape") skip();
       else if (e.key === "ArrowRight") next();
       else if (e.key === "ArrowLeft") prev();
     };
@@ -65,7 +66,7 @@ export default function OnboardingModal({ onClose }: { onClose: () => void }) {
   return (
     <div className={styles.overlay} role="dialog" aria-modal="true" aria-label="Welcome to Notty">
       <div className={styles.card}>
-        <button type="button" className={styles.skip} onClick={onClose}>
+        <button type="button" className={styles.skip} onClick={skip}>
           Skip
         </button>
 

@@ -127,6 +127,11 @@ export default function App() {
           onClose={() => {
             localStorage.setItem("notty_onboarded", "1");
             setOnboardingOpen(false);
+            setSettingsOpen(true);
+          }}
+          onSkip={() => {
+            localStorage.setItem("notty_onboarded", "1");
+            setOnboardingOpen(false);
           }}
         />
       )}
