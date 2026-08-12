@@ -180,6 +180,53 @@
   line-height: 1.5;
 }
 
+.testRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.testBtn {
+  padding: 6px 12px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  white-space: nowrap;
+
+  @include theme.subtle-transition;
+
+  &:hover:not(:disabled) {
+    background: var(--hover);
+    color: var(--text);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: default;
+  }
+}
+
+.testOk {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #2e9e5b;
+}
+
+.testErr {
+  margin: 6px 0 0;
+  font-size: 12px;
+  color: var(--danger);
+  line-height: 1.4;
+
+  @include theme.text-clamp(2);
+}
+
 .storageStatus {
   margin-bottom: 10px;
   font-size: 13px;

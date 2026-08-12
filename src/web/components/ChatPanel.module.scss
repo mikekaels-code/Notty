@@ -137,6 +137,10 @@
 /* ── notice & error ── */
 
 .notice {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
   margin: 0 20px 10px;
   padding: 9px 12px;
   border-radius: 8px;
@@ -144,6 +148,21 @@
   color: var(--accent);
   font-size: 12px;
   line-height: 1.5;
+}
+
+.noticeBtn {
+  padding: 5px 10px;
+  border-radius: var(--radius);
+  background: var(--accent);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 500;
+
+  @include theme.subtle-transition;
+
+  &:hover {
+    opacity: 0.9;
+  }
 }
 
 .error {

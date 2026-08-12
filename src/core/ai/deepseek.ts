@@ -113,6 +113,27 @@ export async function fetchProviderModels(provider: AiProvider, apiKey: string):
   return items.map((m) => m.id).filter((id) => typeof id === "string");
 }
 
+/** Verify an API key works by sending a minimal (1-token) completion. Throws ApiError on failure. */
+export async function testProviderConnection(provider: AiProvider, apiKey: string): Promise<void> {
+  const prov = PROVIDERS[provider];
+  const res = await fetch(prov.endpoint, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${apiKey}`,
+    },
+    body: JSON.stringify({
+      model: prov.defaultModel,
+      messages: [{ role: "user", content: "ping" }],
+      max_tokens: 1,
+    }),
+  });
+  if (!res.ok) {
+    const text = await res.text().catch(() => "");
+    throw makeApiError(`Request failed (${res.status}): ${text.slice(0, 200) || res.statusText}`, res.status);
+  }
+}
+
 /** Single round of streaming chat completion; returns text and any requested tool calls. */
 export async function streamChat(params: ChatParams): Promise<ChatResult> {
   const { apiKey, model, provider = "deepseek", messages, signal, onDelta, onToolCall } = params;

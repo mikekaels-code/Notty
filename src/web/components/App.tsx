@@ -103,7 +103,7 @@ export default function App() {
         </div>
         {chatMounted ? (
           <div className={`${styles.chatWrap}${chatClosing ? ` ${styles.chatWrapClosing}` : ""}`}>
-            <ChatPanel width={chatWidth} onWidthChange={setChatWidth} />
+            <ChatPanel width={chatWidth} onWidthChange={setChatWidth} onOpenSettings={() => setSettingsOpen(true)} />
           </div>
         ) : null}
         <button

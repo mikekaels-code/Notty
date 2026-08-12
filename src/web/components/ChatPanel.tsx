@@ -39,9 +39,11 @@ function relTime(ts: string | number): string {
 export default function ChatPanel({
   width,
   onWidthChange,
+  onOpenSettings,
 }: {
   width: number;
   onWidthChange: (w: number) => void;
+  onOpenSettings: () => void;
 }) {
   const dispatch = useAppDispatch();
   const conversations = useAppSelector((s) => s.chat.conversations);
@@ -55,6 +57,8 @@ export default function ChatPanel({
   const error = useAppSelector((s) => s.chat.error);
   const apiKey = useAppSelector((s) => s.settings.apiKeys[s.settings.provider] ?? "");
   const model = useAppSelector((s) => s.settings.model);
+  const connection = useAppSelector((s) => s.settings.connection);
+  const connectionFailed = connection === "error";
 
   const keyedProviders = useAppSelector(selectKeyedProviders);
   const cachedModels = useAppSelector((s) => s.settings.cachedModels);
@@ -175,9 +179,18 @@ export default function ChatPanel({
         </div>
       )}
 
-      {!apiKey && (
+      {connection !== "ok" && (
         <div className={styles.notice}>
-          No API key set. Open Settings to add one.
+          <span>
+            {!apiKey
+              ? "No API key set."
+              : connection === "error"
+              ? "Connection failed. Check your API key."
+              : "API key not verified yet."}
+          </span>
+          <button type="button" className={styles.noticeBtn} onClick={onOpenSettings}>
+            {!apiKey ? "Open Settings to add one" : "Open Settings"}
+          </button>
         </div>
       )}
 
@@ -256,16 +269,16 @@ export default function ChatPanel({
                   <div
                     key={s.label}
                     role="button"
-                    tabIndex={streaming || !apiKey ? -1 : 0}
-                    className={`${styles.chip} ${streaming || !apiKey ? styles.chipDisabled : ""}`}
+                    tabIndex={streaming || !apiKey || connectionFailed ? -1 : 0}
+                    className={`${styles.chip} ${streaming || !apiKey || connectionFailed ? styles.chipDisabled : ""}`}
                     onClick={() => {
-                      if (streaming || !apiKey) return;
+                      if (streaming || !apiKey || connectionFailed) return;
                       submit(s.prompt);
                     }}
                     onKeyDown={(e) => {
                       if (e.key === "Enter" || e.key === " ") {
                         e.preventDefault();
-                        if (streaming || !apiKey) return;
+                        if (streaming || !apiKey || connectionFailed) return;
                         submit(s.prompt);
                       }
                     }}
@@ -326,7 +339,7 @@ export default function ChatPanel({
               dispatch(setModel(opt.model));
             }}
             aria-label="AI model"
-            disabled={streaming}
+            disabled={streaming || connectionFailed}
           >
             {!modelOptions.some((o) => o.model === model) && <option value="" disabled>Model</option>}
             {keyedProviders.map((p) => (
@@ -348,12 +361,12 @@ export default function ChatPanel({
             placeholder="Ask anything…"
             rows={1}
             aria-label="Chat message"
-            disabled={streaming}
+            disabled={streaming || connectionFailed}
           />
           <button
             type="submit"
             className={styles.sendBtn}
-            disabled={!draft.trim() || streaming}
+            disabled={!draft.trim() || streaming || connectionFailed}
             aria-label="Send"
             title="Send (Enter)"
           >

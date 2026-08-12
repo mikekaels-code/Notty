@@ -28,6 +28,7 @@ persistMiddleware.startListening({
         model: settings.model,
         storageMode: settings.storageMode,
         categories: settings.categories,
+        connection: settings.connection,
       }),
     );
   },

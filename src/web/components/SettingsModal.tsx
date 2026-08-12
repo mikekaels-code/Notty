@@ -1,16 +1,18 @@
 import { useEffect, useRef, useState } from "react";
 import styles from "./SettingsModal.module.scss";
 import { useAppDispatch, useAppSelector, store } from "../../core/store";
-import { setApiKey, setModel, setProvider, setStorageMode, refreshModels } from "../../core/store/settingsSlice";
-import { PROVIDERS, isProvider, type AiProvider } from "../../core/ai/deepseek";
+import { setApiKey, setModel, setProvider, setStorageMode, setConnection, refreshModels } from "../../core/store/settingsSlice";
+import { PROVIDERS, isProvider, testProviderConnection, type AiProvider } from "../../core/ai/deepseek";
 import { pickNotesFolder, resetNotesFolder } from "../storage/storageFactory";
-import { FolderIcon, XIcon, WarningIcon } from "./icons";
+import { FolderIcon, XIcon, CheckIcon } from "./icons";
 import ThemeToggle from "./ThemeToggle";
 
 export default function SettingsModal({ onClose }: { onClose: () => void }) {
   const dispatch = useAppDispatch();
   const settings = useAppSelector((s) => s.settings);
   const [showKey, setShowKey] = useState(false);
+  const [testing, setTesting] = useState(false);
+  const [testError, setTestError] = useState("");
   const firstField = useRef<HTMLInputElement | null>(null);
 
   const providerId: AiProvider = isProvider(settings.provider) ? settings.provider : "deepseek";
@@ -56,6 +58,26 @@ export default function SettingsModal({ onClose }: { onClose: () => void }) {
   async function onResetFolder() {
     if (!confirm("Stop using your notes folder? The next save will ask for a new location.")) return;
     await resetNotesFolder(store);
+  }
+
+  useEffect(() => {
+    dispatch(setConnection("untested"));
+    setTestError("");
+  }, [apiKey, providerId, dispatch]);
+
+  async function onTestConnection() {
+    if (!apiKey.trim() || testing) return;
+    setTesting(true);
+    setTestError("");
+    try {
+      await testProviderConnection(providerId, apiKey.trim());
+      dispatch(setConnection("ok"));
+    } catch (err) {
+      dispatch(setConnection("error"));
+      setTestError(err instanceof Error ? err.message : "Connection failed.");
+    } finally {
+      setTesting(false);
+    }
   }
 
   return (
@@ -106,6 +128,27 @@ export default function SettingsModal({ onClose }: { onClose: () => void }) {
               </button>
             </div>
           </label>
+          {hasKey && (
+            <>
+              <div className={styles.testRow}>
+                <button
+                  type="button"
+                  className={styles.testBtn}
+                  onClick={onTestConnection}
+                  disabled={testing}
+                >
+                  {testing ? "Testing…" : "Test connection"}
+                </button>
+                {settings.connection === "ok" && (
+                  <span className={styles.testOk}>
+                    <CheckIcon size={13} />
+                    Connected
+                  </span>
+                )}
+              </div>
+              {settings.connection === "error" && <p className={styles.testErr}>{testError}</p>}
+            </>
+          )}
           {hasKey && <p className={styles.note}>{prov.note}</p>}
         </section>
 
@@ -144,23 +187,6 @@ export default function SettingsModal({ onClose }: { onClose: () => void }) {
                 </button>
               )}
             </div>
-
-            <button
-              type="button"
-              className={`${styles.storageCard} ${settings.storageMode === "fallback" ? styles.storageCardActive : ""}`}
-              onClick={() => dispatch(setStorageMode("fallback"))}
-            >
-              <div className={styles.storageCardIcon}>
-                <WarningIcon size={18} />
-              </div>
-              <div className={styles.storageCardBody}>
-                <span className={styles.storageCardTitle}>Browser only</span>
-                <span className={styles.storageCardDesc}>Stored in this browser's local storage — not synced</span>
-              </div>
-              {settings.storageMode === "fallback" && (
-                <span className={styles.storageBadge}>Active</span>
-              )}
-            </button>
           </div>
 
         </section>

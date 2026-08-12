@@ -2,6 +2,8 @@ import { createAsyncThunk, createSlice, type PayloadAction } from "@reduxjs/tool
 import type { StorageMode } from "../types";
 import { fetchProviderModels, isProvider } from "../ai/deepseek";
 
+export type ConnectionState = "untested" | "ok" | "error";
+
 export interface SettingsState {
   apiKeys: Record<string, string>;
   provider: string;
@@ -11,6 +13,7 @@ export interface SettingsState {
   model: string;
   categories: string[];
   cachedModels: Record<string, string[]>;
+  connection: ConnectionState;
 }
 
 const DEFAULT_PROVIDER = "deepseek";
@@ -26,6 +29,7 @@ function initialState(): SettingsState {
     model: DEFAULT_MODEL,
     categories: [],
     cachedModels: {},
+    connection: "untested",
   };
 }
 
@@ -71,6 +75,9 @@ const settingsSlice = createSlice({
     setModel(state, action: PayloadAction<string>) {
       state.model = action.payload;
     },
+    setConnection(state, action: PayloadAction<ConnectionState>) {
+      state.connection = action.payload;
+    },
     /** Add a category if it doesn't already exist. */
     addCategory(state, action: PayloadAction<string>) {
       const name = action.payload.trim();
@@ -93,6 +100,6 @@ const settingsSlice = createSlice({
   },
 });
 
-export const { setApiKey, setProvider, setStorageMode, setFolderChosen, setNeedsFolderPick, setModel, addCategory, loadSettings, setCachedModels } =
+export const { setApiKey, setProvider, setStorageMode, setFolderChosen, setNeedsFolderPick, setModel, setConnection, addCategory, loadSettings, setCachedModels } =
   settingsSlice.actions;
 export default settingsSlice.reducer;
